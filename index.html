@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{--navy:#0F1F2C;--orange:#E8891C;--green:#4E9A3A;--ink:#22323D;--mute:#5A6B76;--line:#D7DEE3;--tint:#F5F7F9;--err:#B3261E}
+  :root{--navy:#0F1F2C;--orange:#E8891C;--ink:#22323D;--mute:#5A6B76;--line:#D7DEE3;--tint:#F5F7F9;--err:#B3261E}
   *{box-sizing:border-box}
   body{margin:0;background:var(--tint);color:var(--ink);font:16px/1.55 Montserrat,Calibri,Arial,sans-serif}
   header{background:#fff;border-bottom:4px solid var(--orange)}
@@ -18,21 +18,23 @@
   .partners img{height:44px}
   main{max-width:860px;margin:0 auto;padding:28px 20px 60px}
   h1{color:var(--navy);font-size:30px;line-height:1.2;margin:8px 0 10px}
-  .intro{color:var(--mute);max-width:680px;margin:0 0 24px}
+  .intro{color:var(--mute);max-width:700px;margin:0 0 24px}
   section{background:#fff;border:1px solid var(--line);border-radius:8px;padding:22px 24px;margin:0 0 18px}
   h2{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--orange);margin:0 0 14px}
   .q{margin:0 0 18px}
   .q:last-child{margin-bottom:0}
-  label.t{display:block;font-weight:600;color:var(--navy);margin:0 0 6px}
+  .t{display:block;font-weight:600;color:var(--navy);margin:0 0 6px}
   .hint{display:block;font-weight:400;color:var(--mute);font-size:14px;margin-top:2px}
   .req{color:var(--orange)}
-  input[type=text],input[type=email],input[type=date],textarea,select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:6px;font:inherit;color:var(--ink);background:#fff}
+  input[type=text],input[type=email],input[type=date],textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:6px;font:inherit;color:var(--ink);background:#fff}
   textarea{min-height:110px;resize:vertical}
-  input:focus,textarea:focus,select:focus{outline:2px solid var(--orange);outline-offset:1px;border-color:transparent}
+  input:focus,textarea:focus{outline:2px solid var(--orange);outline-offset:1px;border-color:transparent}
   .opts label{display:flex;gap:10px;align-items:flex-start;padding:5px 0;cursor:pointer}
   .opts input{margin-top:5px;accent-color:var(--navy)}
+  .opts small{display:block;color:var(--mute);font-size:14px}
   .row{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;align-items:end}
-  @media (max-width:640px){.row{grid-template-columns:1fr}.he2at{height:62px}.partners img{height:34px}h1{font-size:25px}}
+  @media (max-width:640px){.row{grid-template-columns:1fr}.he2at{height:62px}.partners img{height:34px}h1{font-size:25px}section{padding:18px}}
+  .note{background:var(--tint);border-left:3px solid var(--orange);padding:10px 14px;color:var(--mute);font-size:14px;margin:0 0 18px}
   .actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:8px}
   button{font:inherit;font-weight:600;border-radius:6px;padding:12px 22px;cursor:pointer}
   .primary{background:var(--navy);color:#fff;border:0}
@@ -55,12 +57,14 @@
 
 <main>
   <h1>Data access request</h1>
-  <p class="intro">Use this form to ask for access to HE²AT Center data. Each request is checked against the agreements we hold with data providers and then goes to the data access committee. We will come back to you once the committee has looked at it.</p>
+  <p class="intro">Use this form to ask for access to HE²AT Center data. We check each request against the agreements we hold with data providers, and then it goes to the data access committee. It takes about ten minutes. We will come back to you once the committee has looked at it.</p>
 
   <form id="f" action="https://formsubmit.co/craig.parker@witsphr.org" method="POST" novalidate>
-    <input type="hidden" name="_subject" value="HE²AT data access request">
+    <input type="hidden" name="_subject" id="subj" value="HE²AT data access request">
     <input type="hidden" name="_template" value="table">
     <input type="hidden" name="_next" id="next" value="">
+    <input type="hidden" name="Reference" id="ref" value="">
+    <input type="hidden" name="Register record (for Databricks)" id="rec" value="">
     <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
 
     <section>
@@ -71,33 +75,49 @@
       </div>
       <div class="row">
         <div class="q"><label class="t" for="inst">Institution <span class="req">*</span></label><input type="text" id="inst" name="Institution" required></div>
-        <div class="q"><label class="t" for="pos">Position <span class="req">*</span><span class="hint">For example postdoc, PhD student, statistician</span></label><input type="text" id="pos" name="Position" required></div>
+        <div class="q"><label class="t" for="country">Country <span class="req">*</span></label><input type="text" id="country" name="Country" required></div>
       </div>
-      <div class="q"><label class="t" for="sup">If you are a student, who is your supervisor?</label><input type="text" id="sup" name="Supervisor"></div>
-      <div class="q"><span class="t" style="display:block;font-weight:600;color:var(--navy);margin-bottom:6px">Are you part of the HE²AT Center consortium? <span class="req">*</span></span>
+      <div class="row">
+        <div class="q"><label class="t" for="pos">Position <span class="req">*</span><span class="hint">For example postdoc, PhD student, statistician</span></label><input type="text" id="pos" name="Position" required></div>
+        <div class="q"><label class="t" for="sup">Supervisor, if you are a student</label><input type="text" id="sup" name="Supervisor"></div>
+      </div>
+      <div class="q"><span class="t">How are you connected to the HE²AT Center? <span class="req">*</span></span>
         <div class="opts">
-          <label><input type="radio" name="Consortium member" value="Yes" required> Yes</label>
-          <label><input type="radio" name="Consortium member" value="No"> No</label>
-          <label><input type="radio" name="Consortium member" value="Not sure"> Not sure</label>
+          <label><input type="radio" name="Connection to HE²AT" value="consortium_staff" required> Staff at a HE²AT consortium institution</label>
+          <label><input type="radio" name="Connection to HE²AT" value="consortium_student"> Student at a HE²AT consortium institution</label>
+          <label><input type="radio" name="Connection to HE²AT" value="external_collaborator"> Outside the consortium, working with a HE²AT investigator</label>
+          <label><input type="radio" name="Connection to HE²AT" value="external_independent"> Outside the consortium, working independently</label>
         </div></div>
+      <div class="q"><label class="t" for="pi">HE²AT investigator you are working with, if any</label><input type="text" id="pi" name="HE²AT investigator"></div>
     </section>
 
     <section>
       <h2>Your project</h2>
       <div class="q"><label class="t" for="title">Project title <span class="req">*</span></label><input type="text" id="title" name="Project title" required></div>
       <div class="q"><label class="t" for="rq">What is your research question? <span class="req">*</span></label><textarea id="rq" name="Research question" required></textarea></div>
-      <div class="q"><label class="t" for="meth">Briefly, how will you analyse the data? <span class="req">*</span></label><textarea id="meth" name="Analysis plan" required></textarea></div>
-      <div class="q"><span class="t" style="display:block;font-weight:600;color:var(--navy);margin-bottom:6px">Is this linked to a HE²AT concept note approved by the Steering Committee? <span class="req">*</span></span>
+      <div class="q"><label class="t" for="meth">Briefly, how will you analyse the data? <span class="req">*</span><span class="hint">Outcomes, exposures and methods. A few lines is enough.</span></label><textarea id="meth" name="Analysis plan" required></textarea></div>
+      <div class="q"><span class="t">Is this linked to a HE²AT concept note? <span class="req">*</span></span>
         <div class="opts">
-          <label><input type="radio" name="Concept note" value="Yes" required> Yes</label>
+          <label><input type="radio" name="Concept note" value="Approved by the Steering Committee" required> Yes, approved by the Steering Committee</label>
           <label><input type="radio" name="Concept note" value="Submitted, waiting for a decision"> Submitted, waiting for a decision</label>
           <label><input type="radio" name="Concept note" value="No"> No</label>
         </div></div>
-      <div class="q" data-group="Expected outputs"><span class="t" style="display:block;font-weight:600;color:var(--navy);margin-bottom:6px">What do you expect to produce? <span class="hint">Tick all that apply</span></span>
+      <div class="q"><span class="t">Is this work part of the HE²AT award? <span class="req">*</span></span>
+        <div class="opts">
+          <label><input type="radio" name="Part of HE²AT award" value="Yes" required> Yes</label>
+          <label><input type="radio" name="Part of HE²AT award" value="No"> No, it sits under another grant, a degree or another project (explain below)</label>
+        </div></div>
+      <div class="q"><label class="t" for="fund">Who funds this work? <span class="req">*</span></label><input type="text" id="fund" name="Funding source" required></div>
+      <div class="q"><span class="t">Will the work or its results be used commercially? <span class="req">*</span></span>
+        <div class="opts">
+          <label><input type="radio" name="Commercial use" value="No" required> No</label>
+          <label><input type="radio" name="Commercial use" value="Yes"> Yes (explain below)</label>
+        </div></div>
+      <div class="q" data-group="Expected outputs"><span class="t">What do you expect to produce? <span class="hint">Tick all that apply</span></span>
         <div class="opts">
           <label><input type="checkbox" value="Journal paper"> Journal paper</label>
           <label><input type="checkbox" value="Thesis or dissertation"> Thesis or dissertation</label>
-          <label><input type="checkbox" value="Report"> Report</label>
+          <label><input type="checkbox" value="Report or policy brief"> Report or policy brief</label>
           <label><input type="checkbox" value="Conference abstract"> Conference abstract</label>
           <label><input type="checkbox" value="Other"> Other</label>
         </div></div>
@@ -105,26 +125,26 @@
 
     <section>
       <h2>The data</h2>
-      <div class="q" data-group="Data needed" data-required="1"><span class="t" style="display:block;font-weight:600;color:var(--navy);margin-bottom:6px">Which data do you need? <span class="req">*</span><span class="hint">Tick all that apply</span></span>
+      <p class="note">All analysis happens on the HE²AT Databricks platform. The data are de-identified and stay on the platform. A variable list for each dataset is available on request.</p>
+      <div class="q" data-group="Datasets requested" data-required="1"><span class="t">Which data do you need? <span class="req">*</span><span class="hint">Tick all that apply</span></span>
         <div class="opts">
-          <label><input type="checkbox" value="RP1 master dataset"> The RP1 master dataset</label>
-          <label><input type="checkbox" value="Specific studies"> Specific studies (list them below)</label>
-          <label><input type="checkbox" value="Climate and environmental data"> Climate and environmental data</label>
-          <label><input type="checkbox" value="Not sure yet"> Not sure yet</label>
+          <label><input type="checkbox" value="RP1"> <span>RP1 master dataset<small>Harmonised individual-level data from 24 studies, with climate exposures linked by pregnancy period</small></span></label>
+          <label><input type="checkbox" value="RP2"> <span>RP2 master dataset<small>Harmonised clinical data from 14 Johannesburg studies, with climate linked to each visit</small></span></label>
+          <label><input type="checkbox" value="Climate only"> <span>Climate and environmental data only</span></label>
+          <label><input type="checkbox" value="Not sure"> <span>Not sure yet</span></label>
         </div><div class="error">Please tick at least one.</div></div>
-      <div class="q"><label class="t" for="vars">List the studies or variables you need, if you know them</label><textarea id="vars" name="Studies or variables"></textarea></div>
-      <div class="q"><label class="t" for="why">Why do you need these for your research question? <span class="req">*</span></label><textarea id="why" name="Why these data" required></textarea></div>
-      <div class="q"><span class="t" style="display:block;font-weight:600;color:var(--navy);margin-bottom:6px">Will any data need to leave the Databricks platform? <span class="req">*</span></span>
+      <div class="q"><label class="t" for="vars">Which studies or variables do you need, if you know?</label><textarea id="vars" name="Studies or variables"></textarea></div>
+      <div class="q"><label class="t" for="why">Why do you need these for your research question? <span class="req">*</span><span class="hint">We give access to what the question needs, so this helps us scope it.</span></label><textarea id="why" name="Why these data" required></textarea></div>
+      <div class="q"><span class="t">What will you take off the platform? <span class="req">*</span></span>
         <div class="opts">
-          <label><input type="radio" name="Data leaving platform" value="No, will work on the platform" required> No, I will work on the platform</label>
-          <label><input type="radio" name="Data leaving platform" value="Aggregated results only"> Aggregated results only</label>
-          <label><input type="radio" name="Data leaving platform" value="Individual-level data"> Individual-level data (please explain at the end)</label>
+          <label><input type="radio" name="Data leaving platform" value="Aggregated results only" required> Aggregated results only (tables, model outputs, figures)</label>
+          <label><input type="radio" name="Data leaving platform" value="Individual-level data"> Individual-level data (explain below)</label>
         </div></div>
     </section>
 
     <section>
       <h2>Ethics</h2>
-      <div class="q"><span class="t" style="display:block;font-weight:600;color:var(--navy);margin-bottom:6px">Do you have ethics approval for this work? <span class="req">*</span></span>
+      <div class="q"><span class="t">Do you have ethics approval for this work? <span class="req">*</span></span>
         <div class="opts">
           <label><input type="radio" name="Ethics approval" value="Yes" required> Yes</label>
           <label><input type="radio" name="Ethics approval" value="Applied, waiting for a decision"> Applied, waiting for a decision</label>
@@ -132,8 +152,8 @@
           <label><input type="radio" name="Ethics approval" value="Not yet"> Not yet</label>
         </div></div>
       <div class="row">
-        <div class="q"><label class="t" for="rec">Ethics committee and reference number</label><input type="text" id="rec" name="Ethics committee and reference"></div>
-        <div class="q"><label class="t" for="exp">When does the approval expire?</label><input type="date" id="exp" name="Ethics expiry"></div>
+        <div class="q"><label class="t" for="erc">Ethics committee and reference number</label><input type="text" id="erc" name="Ethics committee and reference"></div>
+        <div class="q"><label class="t" for="exp">Approval expiry date</label><input type="date" id="exp" name="Ethics expiry"></div>
       </div>
       <p class="hint" style="margin:0">We will ask for a copy of your approval letter by email.</p>
     </section>
@@ -141,24 +161,22 @@
     <section>
       <h2>Access</h2>
       <div class="q"><label class="t" for="who">Who needs access? <span class="req">*</span><span class="hint">Name, email and institution of each person, including you</span></label><textarea id="who" name="People needing access" required></textarea></div>
-      <div class="q"><span class="t" style="display:block;font-weight:600;color:var(--navy);margin-bottom:6px">How long do you need access for? <span class="req">*</span></span>
-        <div class="opts">
-          <label><input type="radio" name="Access period" value="3 months" required> 3 months</label>
-          <label><input type="radio" name="Access period" value="6 months"> 6 months</label>
-          <label><input type="radio" name="Access period" value="12 months"> 12 months</label>
-          <label><input type="radio" name="Access period" value="Other"> Other (say below)</label>
-        </div></div>
-      <div class="q"><label class="t" for="other">Anything else the committee should know?</label><textarea id="other" name="Anything else"></textarea></div>
+      <div class="row">
+        <div class="q"><label class="t" for="from">Access needed from <span class="req">*</span></label><input type="date" id="from" name="Access from" required></div>
+        <div class="q"><label class="t" for="to">Access needed until <span class="req">*</span><span class="hint">Up to 12 months. It can be renewed.</span></label><input type="date" id="to" name="Access until" required></div>
+      </div>
+      <div class="q"><label class="t" for="other">Anything else the committee should know?<span class="hint">Including anything you were asked to explain above</span></label><textarea id="other" name="Anything else"></textarea></div>
     </section>
 
     <section>
       <h2>Declaration</h2>
-      <div class="q"><span class="t" style="display:block;font-weight:600;color:var(--navy);margin-bottom:6px">Please confirm each of the following <span class="req">*</span></span>
+      <div class="q"><span class="t">Please confirm each of the following <span class="req">*</span></span>
         <div class="opts">
           <label><input type="checkbox" name="Declaration: use only for this project" value="Agreed" required> I will use the data only for the project described here</label>
           <label><input type="checkbox" name="Declaration: no onward sharing" value="Agreed" required> I will not share the data with anyone not named on this request</label>
           <label><input type="checkbox" name="Declaration: no re-identification" value="Agreed" required> I will not try to identify any individual in the data</label>
-          <label><input type="checkbox" name="Declaration: acknowledge HE²AT and providers" value="Agreed" required> I will acknowledge the HE²AT Center and the data providers in any outputs</label>
+          <label><input type="checkbox" name="Declaration: delete at end" value="Agreed" required> I will delete any copies of the data when my access ends</label>
+          <label><input type="checkbox" name="Declaration: acknowledge" value="Agreed" required> I will acknowledge the HE²AT Center and the data providers in any outputs</label>
           <label><input type="checkbox" name="Declaration: report publications" value="Agreed" required> I will tell the HE²AT Center about any publications that use the data</label>
         </div></div>
     </section>
@@ -175,7 +193,12 @@
 <script>
 (function(){
   var f=document.getElementById('f');
-  document.getElementById('next').value=new URL('thanks.html',location.href).href;
+  var pad=function(n){return String(n).padStart(2,'0')};
+  function makeRef(){
+    var d=new Date(),r=Math.random().toString(36).slice(2,6).toUpperCase();
+    return 'WEB-'+d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+'-'+pad(d.getHours())+pad(d.getMinutes())+'-'+r;
+  }
+  var ref=makeRef();
   function groups(){
     var ok=true;
     f.querySelectorAll('[data-group]').forEach(function(g){
@@ -188,18 +211,42 @@
     });
     return ok;
   }
+  function v(n){var el=f.elements[n];if(!el)return null;var x=el.value;return x===''?null:x}
+  function record(){
+    var ds=(v('Datasets requested')||'').split('; ').filter(Boolean);
+    var products=[];if(ds.indexOf('RP1')>-1||ds.indexOf('RP2')>-1)products.push('DP-GOLD-DEID');
+    return {
+      web_ref:ref, submitted_at:new Date().toISOString(),
+      requester_name:v('Full name'), requester_email:v('email'), requester_org:v('Institution'),
+      requester_country:v('Country'), he2at_role:v('Connection to HE²AT'),
+      project_title:v('Project title'), purpose:v('Research question'),
+      products_requested:products, studies_requested:ds,
+      analysis_plan:v('Analysis plan'), ethics_reference:v('Ethics committee and reference'),
+      ethics_expires_on:v('Ethics expiry'), funding_source:v('Funding source'),
+      outputs_intended:v('Expected outputs'), onward_use:v('Part of HE²AT award')==='No',
+      commercial_use:v('Commercial use')==='Yes',
+      data_leaves_platform:v('Data leaving platform')==='Individual-level data',
+      requested_from:v('Access from'), requested_to:v('Access until'),
+      people:v('People needing access')
+    };
+  }
   f.addEventListener('submit',function(ev){
     var ok=groups();
-    if(!f.checkValidity()||!ok){ev.preventDefault();document.getElementById('formerr').style.display='block';
-      var bad=f.querySelector(':invalid');if(bad){bad.focus();} f.reportValidity();}
+    var from=v('Access from'),to=v('Access until'),dateOk=true;
+    if(from&&to&&to<=from){dateOk=false;f.elements['Access until'].setCustomValidity('The end date needs to be after the start date.')}
+    else{f.elements['Access until'].setCustomValidity('')}
+    if(!f.checkValidity()||!ok||!dateOk){ev.preventDefault();document.getElementById('formerr').style.display='block';f.reportValidity();return}
+    document.getElementById('ref').value=ref;
+    document.getElementById('subj').value='HE²AT data access request '+ref+': '+(v('Full name')||'');
+    document.getElementById('rec').value=JSON.stringify(record());
+    document.getElementById('next').value=new URL('thanks.html?ref='+ref,location.href).href;
   });
   document.getElementById('copy').addEventListener('click',function(){
     groups();
-    var out=['HE²AT Center data access request',''],seen={};
-    new FormData(f).forEach(function(v,k){if(k.charAt(0)==='_')return;if(seen[k])return;seen[k]=1;
-      var all=new FormData(f).getAll(k).join('; ');out.push(k+': '+all)});
+    var out=['HE²AT Center data access request','Reference: '+ref,''],seen={},fd=new FormData(f);
+    fd.forEach(function(val,k){if(k.charAt(0)==='_'||seen[k]||k==='Reference'||k.indexOf('Register')===0)return;seen[k]=1;out.push(k+': '+fd.getAll(k).join('; '))});
     var b=new Blob([out.join('\n')],{type:'text/plain'});var a=document.createElement('a');
-    a.href=URL.createObjectURL(b);a.download='HE2AT_data_access_request.txt';document.body.appendChild(a);a.click();a.remove();
+    a.href=URL.createObjectURL(b);a.download='HE2AT_data_access_request_'+ref+'.txt';document.body.appendChild(a);a.click();a.remove();
   });
 })();
 </script>

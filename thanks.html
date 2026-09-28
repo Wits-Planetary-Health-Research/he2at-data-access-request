@@ -7,5 +7,6 @@ header{background:#fff;border-bottom:4px solid #E8891C}.bar{max-width:860px;marg
 main{max-width:860px;margin:0 auto;padding:40px 20px}h1{color:#0F1F2C}a{color:#0F1F2C}</style></head>
 <body><header><div class="bar"><img src="assets/he2at.png" alt="HE²AT Center" style="height:78px"></div></header>
 <main><h1>Thank you, your request has been received</h1>
+<p id="r" style="font-weight:600"></p>
 <p>We will check it against our data agreements and put it to the data access committee. We will be in touch by email, and may ask for your ethics approval letter.</p>
-<p><a href="./">Back to the form</a></p></main></body></html>
+<p><a href="./">Back to the form</a></p></main><script>var r=new URLSearchParams(location.search).get("ref");if(r)document.getElementById("r").textContent="Your reference is "+r+". Please quote it if you contact us.";</script></body></html>
