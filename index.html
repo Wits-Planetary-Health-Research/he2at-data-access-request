@@ -218,7 +218,9 @@
     var d=new Date(),r=Math.random().toString(36).slice(2,6).toUpperCase();
     return 'WEB-'+d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+'-'+pad(d.getHours())+pad(d.getMinutes())+'-'+r;
   }
-  var ref=makeRef();
+  var ref=makeRef(), sending=false;
+  var INBOX='https://he2atdacinbox.blob.core.windows.net/requests';
+  var INBOX_SAS='se=2027-10-31T00%3A00Z&sp=c&spr=https&sv=2022-11-02&sr=c&sig=uOPiHw01fJx65l4V6b3H4WouEDmx5P14xpG6gXVjZUU%3D';
   function groups(){
     var ok=true;
     f.querySelectorAll('[data-group]').forEach(function(g){
@@ -260,7 +262,24 @@
     var lvl={aggregate:'aggregate',deidentified:'de-identified',raw:'RAW DATA'}[v('Data level')]||'';
     document.getElementById('subj').value='HE²AT data access request '+ref+' ('+lvl+'): '+(v('Full name')||'');
     document.getElementById('rec').value=JSON.stringify(record());
-    document.getElementById('next').value=new URL('thanks.html?ref='+ref,location.href).href;
+    var thanks=new URL('thanks.html?ref='+ref,location.href).href;
+    document.getElementById('next').value=thanks;
+    ev.preventDefault();
+    if(sending)return; sending=true;
+    var btn=f.querySelector('button[type=submit]');btn.disabled=true;btn.textContent='Sending...';
+    var answers={},fd=new FormData(f);
+    fd.forEach(function(val,k){if(k.charAt(0)==='_')return;answers[k]=fd.getAll(k).join('; ')});
+    var payload=JSON.stringify({record:record(),answers:answers,user_agent:navigator.userAgent});
+    var ctl=new AbortController();setTimeout(function(){ctl.abort()},20000);
+    fetch(INBOX+'/'+ref+'.json?'+INBOX_SAS,{method:'PUT',headers:{'x-ms-blob-type':'BlockBlob','Content-Type':'application/json'},body:payload,signal:ctl.signal})
+      .then(function(r){
+        if(!r.ok)throw new Error('inbox '+r.status);
+        var mail={};fd.forEach(function(val,k){if(k==='_next'||k==='_honey')return;mail[k]=fd.getAll(k).join('; ')});
+        var done=function(){location.href=thanks};
+        fetch(f.action.replace('formsubmit.co/','formsubmit.co/ajax/'),{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(mail)}).then(done,done);
+        setTimeout(done,6000);
+      })
+      .catch(function(){f.submit()});
   });
   document.getElementById('copy').addEventListener('click',function(){
     groups();
