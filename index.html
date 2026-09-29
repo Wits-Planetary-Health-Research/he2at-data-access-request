@@ -33,7 +33,12 @@
   .opts input{margin-top:5px;accent-color:var(--navy)}
   .opts small{display:block;color:var(--mute);font-size:14px}
   .row{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;align-items:end}
+  .row .q{margin-bottom:18px}
   @media (max-width:640px){.row{grid-template-columns:1fr}.he2at{height:62px}.partners img{height:34px}h1{font-size:25px}section{padding:18px}}
+  .levels{display:grid;gap:10px}
+  .levels div{border:1px solid var(--line);border-radius:6px;padding:10px 14px}
+  .levels b{display:block;color:var(--navy)}
+  .levels span{display:block;color:var(--mute);font-size:14px}
   .note{background:var(--tint);border-left:3px solid var(--orange);padding:10px 14px;color:var(--mute);font-size:14px;margin:0 0 18px}
   .actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:8px}
   button{font:inherit;font-weight:600;border-radius:6px;padding:12px 22px;cursor:pointer}
@@ -57,7 +62,16 @@
 
 <main>
   <h1>Data access request</h1>
-  <p class="intro">Use this form to ask for access to HE²AT Center data. We check each request against the agreements we hold with data providers, and then it goes to the data access committee. It takes about ten minutes. We will come back to you once the committee has looked at it.</p>
+  <p class="intro">Use this form to ask for access to HE²AT Center data. It takes about ten minutes. How your request is reviewed depends on the level of data you need, set out below.</p>
+  <section>
+    <h2>How requests are reviewed</h2>
+    <div class="levels">
+      <div><b>Aggregate or synthetic data</b><span>Checked by the committee secretary and approved. The committee is told.</span></div>
+      <div><b>De-identified harmonised data</b><span>The RP1 and RP2 master datasets. The secretary checks the request against our agreements and ethics, then shares a recommendation with the committee chair and a consortium member. If nobody objects within five working days, access goes ahead.</span></div>
+      <div><b>Raw data as supplied by providers</b><span>Goes to the full committee, and the provider of each dataset involved has to agree. This takes longer.</span></div>
+    </div>
+    <p class="hint" style="margin:12px 0 0">Anything unusual, such as missing ethics approval, work outside HE²AT's aims, or a risk of identifying people, goes to the full committee whatever the level.</p>
+  </section>
 
   <form id="f" action="https://formsubmit.co/craig.parker@witsphr.org" method="POST" novalidate>
     <input type="hidden" name="_subject" id="subj" value="HE²AT data access request">
@@ -125,7 +139,13 @@
 
     <section>
       <h2>The data</h2>
-      <p class="note">All analysis happens on the HE²AT Databricks platform. The data are de-identified and stay on the platform. A variable list for each dataset is available on request.</p>
+      <p class="note">All analysis happens on the HE²AT Databricks platform and the data stay there. A variable list for each dataset is available on request.</p>
+      <div class="q"><span class="t">What level of data do you need? <span class="req">*</span><span class="hint">Most analyses only need de-identified harmonised data</span></span>
+        <div class="opts">
+          <label><input type="radio" name="Data level" value="aggregate" required> <span>Aggregate or synthetic data only</span></label>
+          <label><input type="radio" name="Data level" value="deidentified"> <span>De-identified harmonised data<small>The RP1 and RP2 master datasets and their climate-linked tables</small></span></label>
+          <label><input type="radio" name="Data level" value="raw"> <span>Raw data as supplied by providers<small>Please explain below why the harmonised data will not do</small></span></label>
+        </div></div>
       <div class="q" data-group="Datasets requested" data-required="1"><span class="t">Which data do you need? <span class="req">*</span><span class="hint">Tick all that apply</span></span>
         <div class="opts">
           <label><input type="checkbox" value="RP1"> <span>RP1 master dataset<small>Harmonised individual-level data from 24 studies, with climate exposures linked by pregnancy period</small></span></label>
@@ -227,7 +247,7 @@
       commercial_use:v('Commercial use')==='Yes',
       data_leaves_platform:v('Data leaving platform')==='Individual-level data',
       requested_from:v('Access from'), requested_to:v('Access until'),
-      people:v('People needing access')
+      people:v('People needing access'), data_level:v('Data level')
     };
   }
   f.addEventListener('submit',function(ev){
@@ -237,7 +257,8 @@
     else{f.elements['Access until'].setCustomValidity('')}
     if(!f.checkValidity()||!ok||!dateOk){ev.preventDefault();document.getElementById('formerr').style.display='block';f.reportValidity();return}
     document.getElementById('ref').value=ref;
-    document.getElementById('subj').value='HE²AT data access request '+ref+': '+(v('Full name')||'');
+    var lvl={aggregate:'aggregate',deidentified:'de-identified',raw:'RAW DATA'}[v('Data level')]||'';
+    document.getElementById('subj').value='HE²AT data access request '+ref+' ('+lvl+'): '+(v('Full name')||'');
     document.getElementById('rec').value=JSON.stringify(record());
     document.getElementById('next').value=new URL('thanks.html?ref='+ref,location.href).href;
   });
